@@ -26,11 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentService:
-    """
-    Service class for managing the LangChain Agent.
-    Handles agent initialization, execution, and response formatting.
-    Uses LangGraph's ReAct agent for tool calling.
-    """
+    
 
     def __init__(self):
         """Initialize the Agent Service with Azure OpenAI and tools."""
@@ -93,19 +89,15 @@ After using a tool, summarize the result in a user-friendly way."""
         logger.info(f"Processing message: {message}")
 
         try:
-            # Build messages with history
             messages = self.chat_history + [HumanMessage(content=message)]
             
-            # Execute the agent
             result = await self.agent.ainvoke({"messages": messages})
 
-            # Extract response and tool usage from the result
             response_text = ""
             tool_used = None
             tool_output = None
             thinking = None
             
-            # Process the messages in the result
             output_messages = result.get("messages", [])
             
             for msg in output_messages:
