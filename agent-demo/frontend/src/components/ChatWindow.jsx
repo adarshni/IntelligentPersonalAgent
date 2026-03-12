@@ -10,6 +10,8 @@ import {
 import {
   Send24Filled,
   ErrorCircle24Regular,
+  Lightbulb24Regular,
+  Dismiss24Regular,
 } from '@fluentui/react-icons';
 import MessageBubble from './MessageBubble';
 import { sendChatMessage } from '../api';
@@ -72,6 +74,30 @@ const useStyles = makeStyles({
   sendButton: {
     minWidth: '80px',
   },
+  suggestionsToggle: {
+    minWidth: '44px',
+  },
+  suggestionsPanel: {
+    padding: '12px 24px',
+    backgroundColor: tokens.colorNeutralBackground3,
+    borderTop: `1px solid ${tokens.colorNeutralStroke1}`,
+  },
+  suggestionsPanelHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '12px',
+  },
+  suggestionsPanelTitle: {
+    fontSize: tokens.fontSizeBase300,
+    fontWeight: tokens.fontWeightSemibold,
+    color: tokens.colorNeutralForeground2,
+  },
+  suggestionsGrid: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+  },
   loadingContainer: {
     display: 'flex',
     alignItems: 'center',
@@ -97,8 +123,15 @@ const useStyles = makeStyles({
  * Sample prompts for user guidance.
  */
 const SAMPLE_PROMPTS = [
+  "Calculate tip for a $85 bill with 18% tip split 3 ways",
+  "Convert 100 kg to pounds",
+  "What's my BMI if I weigh 70kg and I'm 175cm tall?",
+  "Generate a secure password",
+  "Give me an inspirational quote",
+  "Calculate my age if I was born on 1995-08-15",
+  "What's 25% of 400?",
+  "Convert 30 celsius to fahrenheit",
   "What's the sum of 10, 20, and 35?",
-  "Convert 100 USD to INR",
   "What's the weather in Bangalore?",
   "What's today's date?",
   "Search for latest AI news",
@@ -118,6 +151,7 @@ function ChatWindow({ messages, setMessages, onToolLog }) {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -215,8 +249,16 @@ function ChatWindow({ messages, setMessages, onToolLog }) {
    * Handle suggestion click.
    */
   const handleSuggestion = useCallback((suggestion) => {
+    setShowSuggestions(false);
     handleSend(suggestion);
   }, [handleSend]);
+
+  /**
+   * Toggle suggestions panel.
+   */
+  const toggleSuggestions = useCallback(() => {
+    setShowSuggestions(prev => !prev);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -273,9 +315,48 @@ function ChatWindow({ messages, setMessages, onToolLog }) {
         </div>
       )}
 
+      {/* Suggestions Panel (toggleable) */}
+      {showSuggestions && messages.length > 0 && (
+        <div className={styles.suggestionsPanel}>
+          <div className={styles.suggestionsPanelHeader}>
+            <Text className={styles.suggestionsPanelTitle}>💡 Try these prompts:</Text>
+            <Button
+              appearance="subtle"
+              icon={<Dismiss24Regular />}
+              size="small"
+              onClick={toggleSuggestions}
+            />
+          </div>
+          <div className={styles.suggestionsGrid}>
+            {SAMPLE_PROMPTS.map((prompt, index) => (
+              <Button
+                key={index}
+                appearance="outline"
+                size="small"
+                className={styles.suggestionButton}
+                onClick={() => handleSuggestion(prompt)}
+              >
+                {prompt}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Input Area */}
       <div className={styles.inputContainer}>
         <div className={styles.inputWrapper}>
+          {/* Suggestions Toggle Button */}
+          {messages.length > 0 && (
+            <Button
+              className={styles.suggestionsToggle}
+              appearance={showSuggestions ? "primary" : "subtle"}
+              icon={<Lightbulb24Regular />}
+              onClick={toggleSuggestions}
+              title="Show suggestion prompts"
+              size="large"
+            />
+          )}
           <Input
             ref={inputRef}
             className={styles.input}

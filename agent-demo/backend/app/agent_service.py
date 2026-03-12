@@ -26,11 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentService:
-    """
-    Service class for managing the LangChain Agent.
-    Handles agent initialization, execution, and response formatting.
-    Uses LangGraph's ReAct agent for tool calling.
-    """
+    
 
     def __init__(self):
         """Initialize the Agent Service with Azure OpenAI and tools."""
@@ -67,6 +63,14 @@ Available tools:
 - get_current_date: Get current date and time
 - get_weather: Get weather for Bangalore, Berlin, or New York
 - search_web: Search the web for information
+- calculate_tip: Calculate restaurant tip and split bills
+- convert_units: Convert units (km/miles, kg/lbs, celsius/fahrenheit, etc.)
+- get_random_quote: Get an inspirational quote
+- analyze_text: Analyze text (word count, reading time, etc.)
+- calculate_bmi: Calculate Body Mass Index
+- calculate_age: Calculate age from birth date
+- generate_password: Generate secure passwords
+- calculate_percentage: Calculate percentages
 
 Always explain what you're doing and provide clear, helpful responses.
 After using a tool, summarize the result in a user-friendly way."""
@@ -93,19 +97,15 @@ After using a tool, summarize the result in a user-friendly way."""
         logger.info(f"Processing message: {message}")
 
         try:
-            # Build messages with history
             messages = self.chat_history + [HumanMessage(content=message)]
             
-            # Execute the agent
             result = await self.agent.ainvoke({"messages": messages})
 
-            # Extract response and tool usage from the result
             response_text = ""
             tool_used = None
             tool_output = None
             thinking = None
             
-            # Process the messages in the result
             output_messages = result.get("messages", [])
             
             for msg in output_messages:
