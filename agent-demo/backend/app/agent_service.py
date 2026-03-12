@@ -63,6 +63,14 @@ Available tools:
 - get_current_date: Get current date and time
 - get_weather: Get weather for Bangalore, Berlin, or New York
 - search_web: Search the web for information
+- calculate_tip: Calculate restaurant tip and split bills
+- convert_units: Convert units (km/miles, kg/lbs, celsius/fahrenheit, etc.)
+- get_random_quote: Get an inspirational quote
+- analyze_text: Analyze text (word count, reading time, etc.)
+- calculate_bmi: Calculate Body Mass Index
+- calculate_age: Calculate age from birth date
+- generate_password: Generate secure passwords
+- calculate_percentage: Calculate percentages
 
 Always explain what you're doing and provide clear, helpful responses.
 After using a tool, summarize the result in a user-friendly way."""
